@@ -5,11 +5,14 @@
       "item": "minecraft:redstone"
     },
     {
-      "item": "minecraft:stick"
+      "item": "minecraft:cobblestone"
+    },
+    {
+      "item": "minecraft:quartz"
     }
 
   ],
   "output": {
-    "item": "minecraft:redstone_torch"
+    "item": "minecraft:observer"
   }
 }
