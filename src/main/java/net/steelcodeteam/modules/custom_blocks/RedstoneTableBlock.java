@@ -44,7 +44,7 @@ public class RedstoneTableBlock extends BaseEntityBlock {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof RedstoneTableEntity) {
-                ((RedstoneTableEntity) blockEntity).drops();
+               // ((RedstoneTableEntity) blockEntity).drops();
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);

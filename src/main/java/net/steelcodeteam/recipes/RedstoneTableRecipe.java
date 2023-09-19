@@ -49,7 +49,6 @@ public class RedstoneTableRecipe implements Recipe<SimpleContainer> {
             }
             index++;
         }
-        System.out.println("a");
         for (boolean b : itsAll) {
             if (!b) {
                 return false;

@@ -42,6 +42,7 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
 
     public RedstoneTableScreen(RedstoneTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
+        menu.registerUpdateListener(this::containerChanged);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
     private void renderRecipes(GuiGraphics guiGraphics, int topLeft, int botLeft, int j1) {
 
 
-        List<RedstoneTableRecipe> list = this.menu.getBlockEntity().getRecipes();
+        List<RedstoneTableRecipe> list = this.menu.getRecipes();
         for(int i = this.startIndex; i < j1 && i < list.size(); i++) {
             int j = i - this.startIndex;
             int k = topLeft + j % 4 * 16;
@@ -93,15 +94,20 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
     }
 
     protected int getOffscreenRows() {
-        return (this.getMenu().getBlockEntity().getRecipes().size() + 6 - 1) / 6 - 2;
+        return (this.getMenu().getRecipes().size() + 6 - 1) / 6 - 2;
     }
 
     private boolean isScrollBarActive() {
-        return this.displayRecipes && this.getMenu().getBlockEntity().getRecipes().size() > 12;
+        return this.displayRecipes && this.getMenu().getRecipes().size() > 12;
     }
 
-    @Override
-    protected void renderLabels(GuiGraphics p_281635_, int p_282681_, int p_283686_) {
+
+    private void containerChanged() {
+        this.displayRecipes = this.menu.hasInputItem();
+        if (!this.displayRecipes) {
+            this.scrollOffs = 0.0F;
+            this.startIndex = 0;
+        }
 
     }
 }
