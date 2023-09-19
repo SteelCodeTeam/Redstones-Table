@@ -42,7 +42,6 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
 
     public RedstoneTableScreen(RedstoneTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        menu.registerUpdateListener(this::containerChanged);
     }
 
     @Override
