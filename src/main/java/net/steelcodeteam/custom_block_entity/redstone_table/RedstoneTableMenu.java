@@ -1,33 +1,19 @@
 package net.steelcodeteam.custom_block_entity.redstone_table;
 
 import com.google.common.collect.Lists;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
-import net.steelcodeteam.recipes.RedstoneTableRecipe;
+import net.steelcodeteam.data.enums.RecipeEnum;
 import net.steelcodeteam.registries.ModBlockRegister;
 import net.steelcodeteam.registries.ModMenuRegister;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 
 public class RedstoneTableMenu extends AbstractContainerMenu {
@@ -35,6 +21,7 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
     private final Level level;
     private final List<Slot> inputSlots = Lists.newArrayList();
     private Slot resultSlot;
+    private final ContainerData data;
     ResultContainer resultContainer = new ResultContainer();
     private final DataSlot selectedRecipeIndex = DataSlot.standalone();
 
@@ -47,6 +34,7 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
         super(ModMenuRegister.REDSTONE_TABLE_MENU.get(), menuId);
         this.blockEntity = blockEntity;
         this.level = inventory.player.level();
+        this.data = data;
         addPlayerInventory(inventory);
         addPlayerHotbar(inventory);
         addTableMenu();
@@ -123,15 +111,29 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
                 for (int i = 0; i < 8; i++) {
                     //0 to 7 first line
                     //8 to 15 second line
-                    this.inputSlots.add(i + (j * 8) , this.addSlot(new SlotItemHandler(itemStackHandler,  i + (j * 8), slotOffsetX, slotOffsetY)));
+                    this.addSlot(new SlotItemHandler(itemStackHandler,  i + (j * 8), slotOffsetX, slotOffsetY));
                     slotOffsetX += 18;
                 }
                 slotOffsetX = 16;
                 slotOffsetY = 36;
             }
             //16 result slot
-            this.resultSlot = this.addSlot(new Slot(this.resultContainer,  16, 145, 73));
+            this.addSlot(new SlotItemHandler(itemStackHandler,  16, 145, 73));
         });
     }
 
+    public List<RecipeEnum> recipeEnums = new ArrayList<>();
+
+    public void generateRecipes() {
+        recipeEnums.clear();
+        for (RecipeEnum recipeEnum : RecipeEnum.values()) {
+            if (this.data.get(recipeEnum.getId()) == 1) {
+                recipeEnums.add(recipeEnum);
+            }
+        }
+    }
+
+    public List<RecipeEnum> getRecipes() {
+        return this.recipeEnums;
+    }
 }

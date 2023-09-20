@@ -5,14 +5,12 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.steelcodeteam.RedstonesTable;
+import net.steelcodeteam.data.enums.RecipeEnum;
 import net.steelcodeteam.modules.Square;
-import net.steelcodeteam.recipes.RedstoneTableRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -62,15 +60,14 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
 
     private void renderRecipes(GuiGraphics guiGraphics, int topLeft, int botLeft, int j1) {
 
-
-        List<RedstoneTableRecipe> list = this.menu.getRecipes();
-        for(int i = this.startIndex; i < j1 && i < list.size(); i++) {
+        this.menu.generateRecipes();
+        for(int i = this.startIndex; i < j1 && i < this.menu.getRecipes().size(); i++) {
             int j = i - this.startIndex;
             int k = topLeft + j % 4 * 16;
             int l = j / 4;
             int i1 = botLeft + l * 18 + 2;
             //renderiza el item de salida en el menu de seleccion
-            guiGraphics.renderItem(list.get(i).getResultItem(this.minecraft.level.registryAccess()), k, i1);
+            guiGraphics.renderItem(this.menu.getRecipes().get(i).getOutput(),k, i1);
         }
     }
 
@@ -93,20 +90,13 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
     }
 
     protected int getOffscreenRows() {
-        return (this.getMenu().getRecipes().size() + 6 - 1) / 6 - 2;
+        this.menu.generateRecipes();
+        return (this.menu.getRecipes().size() + 6 - 1) / 6 - 2;
     }
 
     private boolean isScrollBarActive() {
-        return this.displayRecipes && this.getMenu().getRecipes().size() > 12;
+        this.menu.generateRecipes();
+        return this.displayRecipes && this.menu.getRecipes().size() > 12;
     }
 
-
-    private void containerChanged() {
-        this.displayRecipes = this.menu.hasInputItem();
-        if (!this.displayRecipes) {
-            this.scrollOffs = 0.0F;
-            this.startIndex = 0;
-        }
-
-    }
 }

@@ -4,8 +4,10 @@ import ca.weblite.objc.Proxy;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
@@ -16,6 +18,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -32,11 +36,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
-
-    private List<RedstoneTableRecipe> recipes = Lists.newArrayList();
     private int selectedRecipeIndex;
     private final LazyOptional<ItemStackHandler> optional = LazyOptional.of(() -> this.itemHandler);
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
@@ -79,7 +82,7 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
         }
     };
 
-    private final boolean[] recipeListValues = new boolean[RecipeEnum.values().length];
+    private boolean[] recipeListValues = new boolean[RecipeEnum.values().length];
 
     public RedstoneTableEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityRegister.REDSTONE_TABLE_ENTITY.get(), pos, state);
@@ -87,19 +90,17 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
         this.data = new ContainerData() {
             @Override
             public int get(int index) {
-                if (RedstoneTableEntity.this.recipeListValues[index]) {
-                    return 1;
-                } else {
-                    return 0;
-                }
+                return switch (index) {
+                    case 0, 1 -> convert(RedstoneTableEntity.this.recipeListValues[index]);
+                    default -> 0;
+                };
             }
 
             @Override
             public void set(int index, int value) {
-                if (value == 1) {
-                    RedstoneTableEntity.this.recipeListValues[index] = true;
-                } else {
-                    RedstoneTableEntity.this.recipeListValues[index] = false;
+                switch (index) {
+                    case 0, 1 -> RedstoneTableEntity.this.recipeListValues[index] = convertn(value);
+                    default -> RedstoneTableEntity.this.recipeListValues[index] = false;
                 }
             }
 
@@ -126,9 +127,13 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     public void load(CompoundTag tag) {
         itemHandler.deserializeNBT(tag.getCompound("inventory"));
         for(int index = 0; index< recipeListValues.length; index++) {
-            recipeListValues[index] = tag.getBoolean("recipe_"+ index);
+            this.recipeListValues[index] = tag.getBoolean("recipe_"+ index);
         }
-        super.load(tag);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        load(tag);
     }
 
     @Override
@@ -144,8 +149,12 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
-        return cap == ForgeCapabilities.ITEM_HANDLER ? this.optional.cast() : super.getCapability(cap);
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if(cap == ForgeCapabilities.ITEM_HANDLER) {
+            return lazyItemHandler.cast();
+        }
+
+        return super.getCapability(cap, side);
     }
 
     @Override
@@ -162,24 +171,41 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
 
-    private void setupRecipeList(RedstoneTableEntity entity) {
+    public static void tick(Level level, BlockPos blockPos, BlockState state, RedstoneTableEntity entity) {
+        if (!level.isClientSide()) {
+            setupRecipeList(entity);
+            setChanged(level, blockPos, state);
+        }
+    }
+
+    private static void setupRecipeList(RedstoneTableEntity entity) {
+        List<RedstoneTableRecipe> recipes;
 
         SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
+
         for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
-
-        this.recipes.clear();
-        this.recipes = level.getRecipeManager().getRecipesFor(RedstoneTableRecipe.Type.INSTANCE, inventory, level);
-
+        recipes = entity.level.getRecipeManager().getRecipesFor(RedstoneTableRecipe.Type.INSTANCE, inventory, entity.level);
+        Arrays.fill(entity.recipeListValues, false);
         for (RecipeEnum recipeEnum : RecipeEnum.values()) {
-            for (RedstoneTableRecipe recipe: this.recipes){
-                if (recipeEnum.getOutput().equals(recipe.getOutput())) {
-                    recipeListValues[recipeEnum.getId()] = true;
+            for (RedstoneTableRecipe recipe: recipes){
+                if (recipeEnum.getOutput().getItem().equals(recipe.getOutput().getItem())) {
+                    entity.recipeListValues[recipeEnum.getId()] = true;
                 }
             }
         }
+        for (int index = 0; index < entity.data.getCount(); index++) {
+            entity.data.set(index, entity.convert(entity.recipeListValues[index]));
+        }
+    }
 
+    private int convert(boolean value) {
+        return value ? 1 : 0;
+    }
+
+    private boolean convertn(int value) {
+        return value == 1;
     }
 
     @Nullable

@@ -4,8 +4,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public enum RecipeEnum {
-    R1(1, Items.REDSTONE_TORCH.getDefaultInstance()),
-    R2(2, Items.OBSERVER.getDefaultInstance());
+    R1(0, Items.REDSTONE_TORCH.getDefaultInstance()),
+    R2(1, Items.OBSERVER.getDefaultInstance());
 
 
     private final Integer id;
