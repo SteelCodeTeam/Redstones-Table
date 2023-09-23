@@ -1,6 +1,5 @@
 package net.steelcodeteam.custom_block_entity.redstone_table;
 
-import com.google.common.collect.Lists;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -19,28 +18,38 @@ import java.util.*;
 public class RedstoneTableMenu extends AbstractContainerMenu {
     private final RedstoneTableEntity blockEntity;
     private final Level level;
-    private final List<Slot> inputSlots = Lists.newArrayList();
-    private Slot resultSlot;
     private final ContainerData data;
-    ResultContainer resultContainer = new ResultContainer();
-    private final DataSlot selectedRecipeIndex = DataSlot.standalone();
 
-
-    public RedstoneTableMenu(int menuId, Inventory playerInv, FriendlyByteBuf additionalData) {
-        this(menuId, playerInv, (RedstoneTableEntity) playerInv.player.level().getBlockEntity(additionalData.readBlockPos()), new SimpleContainerData(17));
+    //Server
+    public RedstoneTableMenu(int menuId, Inventory inv, FriendlyByteBuf additionalData) {
+        this(menuId, inv, (RedstoneTableEntity) inv.player.level().getBlockEntity(additionalData.readBlockPos()), new SimpleContainerData(16));
     }
 
+    //Client
     public RedstoneTableMenu(int menuId, Inventory inventory, RedstoneTableEntity blockEntity, ContainerData data) {
         super(ModMenuRegister.REDSTONE_TABLE_MENU.get(), menuId);
+
+        checkContainerSize(inventory, 16);
+
+
         this.blockEntity = blockEntity;
         this.level = inventory.player.level();
         this.data = data;
         addPlayerInventory(inventory);
         addPlayerHotbar(inventory);
-        addTableMenu();
+        addSlotsToMenu();
+
+        addDataSlots(data);
 
     }
 
+    // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
+    // must assign a slot number to each of the slots used by the GUI.
+    // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
+    // Each time we add a Slot to the container, it automatically increases the slotIndex, which means
+    //  0 - 8 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 - 8)
+    //  9 - 35 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
+    //  36 - 44 = TileInventory slots, which map to our TileEntity slot numbers 0 - 8)
     private static final int HOTBAR_SLOT_COUNT = 9;
     private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
     private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
@@ -102,7 +111,7 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(playerInventory, i, 7 + i * 18, 170));
         }
     }
-    private void addTableMenu() {
+    private void addSlotsToMenu() {
 
         this.blockEntity.getOptional().ifPresent(itemStackHandler -> {
             int slotOffsetX = 16;
@@ -118,22 +127,23 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
                 slotOffsetY = 36;
             }
             //16 result slot
-            this.addSlot(new SlotItemHandler(itemStackHandler,  16, 145, 73));
+            //this.addSlot(new SlotItemHandler(itemStackHandler,  16, 145, 73));
         });
     }
 
-    public List<RecipeEnum> recipeEnums = new ArrayList<>();
 
-    public void generateRecipes() {
-        recipeEnums.clear();
-        for (RecipeEnum recipeEnum : RecipeEnum.values()) {
-            if (this.data.get(recipeEnum.getId()) == 1) {
-                recipeEnums.add(recipeEnum);
+
+    public List<Integer> getRecipes() {
+        List<Integer> recipes = new ArrayList<>() {{
+            for (int i = 0; i <= 15; i++) {
+                add(0);
             }
-        }
-    }
+        }};
 
-    public List<RecipeEnum> getRecipes() {
-        return this.recipeEnums;
+        for (int index = 0; index <= 15; index++) {
+            recipes.set(index, this.data.get(index));
+        }
+
+        return recipes;
     }
 }

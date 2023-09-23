@@ -1,14 +1,9 @@
 package net.steelcodeteam.custom_block_entity.redstone_table;
 
-import ca.weblite.objc.Proxy;
-import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -19,7 +14,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,27 +21,33 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.steelcodeteam.RedstonesTable;
-import net.steelcodeteam.data.enums.RecipeEnum;
 import net.steelcodeteam.recipes.RedstoneTableRecipe;
 import net.steelcodeteam.registries.ModBlockEntityRegister;
-import org.antlr.v4.runtime.atn.SemanticContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
-    private int selectedRecipeIndex;
+    public ArrayList<Integer> recipes = new ArrayList<>() {{
+        for (int i = 0; i <= 15; i++) {
+            add(0);
+        }
+    }};
+
+
     private final LazyOptional<ItemStackHandler> optional = LazyOptional.of(() -> this.itemHandler);
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
     protected final ContainerData data;
+
+
     public LazyOptional<ItemStackHandler> getOptional() {
         return this.optional;
     }
-    private final ItemStackHandler itemHandler = new ItemStackHandler(17) {
+
+
+    private final ItemStackHandler itemHandler = new ItemStackHandler(16) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -82,7 +82,8 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
         }
     };
 
-    private boolean[] recipeListValues = new boolean[RecipeEnum.values().length];
+
+
 
     public RedstoneTableEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityRegister.REDSTONE_TABLE_ENTITY.get(), pos, state);
@@ -91,44 +92,87 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
             @Override
             public int get(int index) {
                 return switch (index) {
-                    case 0, 1 -> convert(RedstoneTableEntity.this.recipeListValues[index]);
+                    case 0 -> RedstoneTableEntity.this.recipes.get(0);
+                    case 1 -> RedstoneTableEntity.this.recipes.get(1);
+                    case 2 -> RedstoneTableEntity.this.recipes.get(2);
+                    case 3 -> RedstoneTableEntity.this.recipes.get(3);
+                    case 4 -> RedstoneTableEntity.this.recipes.get(4);
+                    case 5 -> RedstoneTableEntity.this.recipes.get(5);
+                    case 6 -> RedstoneTableEntity.this.recipes.get(6);
+                    case 7 -> RedstoneTableEntity.this.recipes.get(7);
+                    case 8 -> RedstoneTableEntity.this.recipes.get(8);
+                    case 9 -> RedstoneTableEntity.this.recipes.get(9);
+                    case 10 -> RedstoneTableEntity.this.recipes.get(10);
+                    case 11 -> RedstoneTableEntity.this.recipes.get(11);
+                    case 12 -> RedstoneTableEntity.this.recipes.get(12);
+                    case 13 -> RedstoneTableEntity.this.recipes.get(13);
+                    case 14 -> RedstoneTableEntity.this.recipes.get(14);
+                    case 15 -> RedstoneTableEntity.this.recipes.get(15);
                     default -> 0;
                 };
             }
 
             @Override
             public void set(int index, int value) {
-                switch (index) {
-                    case 0, 1 -> RedstoneTableEntity.this.recipeListValues[index] = convertn(value);
-                    default -> RedstoneTableEntity.this.recipeListValues[index] = false;
-                }
+                if (index >= 0 && index <= 15)
+                    RedstoneTableEntity.this.recipes.set(index, value);
             }
 
             @Override
             public int getCount() {
-                return RedstoneTableEntity.this.recipeListValues.length;
+                return 16;
             }
         };
     }
 
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(@NotNull CompoundTag tag) {
+
         tag.put("inventory", itemHandler.serializeNBT());
-        int cont = 0;
-        for (boolean val : recipeListValues) {
-            tag.putBoolean("recipe_"+cont, val);
-            cont++;
-        }
+
+        tag.putInt("redstone_table.recipe_result.redstone_torch", this.recipes.get(0));
+        tag.putInt("redstone_table.recipe_result.dispenser", this.recipes.get(1));
+        tag.putInt("redstone_table.recipe_result.a", this.recipes.get(2));
+        tag.putInt("redstone_table.recipe_result.b", this.recipes.get(3));
+        tag.putInt("redstone_table.recipe_result.c", this.recipes.get(4));
+        tag.putInt("redstone_table.recipe_result.d", this.recipes.get(5));
+        tag.putInt("redstone_table.recipe_result.e", this.recipes.get(6));
+        tag.putInt("redstone_table.recipe_result.f", this.recipes.get(7));
+        tag.putInt("redstone_table.recipe_result.g", this.recipes.get(8));
+        tag.putInt("redstone_table.recipe_result.h", this.recipes.get(9));
+        tag.putInt("redstone_table.recipe_result.i", this.recipes.get(10));
+        tag.putInt("redstone_table.recipe_result.j", this.recipes.get(11));
+        tag.putInt("redstone_table.recipe_result.k", this.recipes.get(12));
+        tag.putInt("redstone_table.recipe_result.l", this.recipes.get(13));
+        tag.putInt("redstone_table.recipe_result.m", this.recipes.get(14));
+        tag.putInt("redstone_table.recipe_result.n", this.recipes.get(15));
+
         super.saveAdditional(tag);
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void load(@NotNull CompoundTag tag) {
+
         itemHandler.deserializeNBT(tag.getCompound("inventory"));
-        for(int index = 0; index< recipeListValues.length; index++) {
-            this.recipeListValues[index] = tag.getBoolean("recipe_"+ index);
-        }
+        this.recipes.set(0, tag.getInt("redstone_table.recipe_result.redstone_torch"));
+        this.recipes.set(1, tag.getInt("redstone_table.recipe_result.dispenser"));
+        this.recipes.set(2, tag.getInt("redstone_table.recipe_result.a"));
+        this.recipes.set(3, tag.getInt("redstone_table.recipe_result.b"));
+        this.recipes.set(4, tag.getInt("redstone_table.recipe_result.c"));
+        this.recipes.set(5, tag.getInt("redstone_table.recipe_result.d"));
+        this.recipes.set(6, tag.getInt("redstone_table.recipe_result.e"));
+        this.recipes.set(7, tag.getInt("redstone_table.recipe_result.f"));
+        this.recipes.set(8, tag.getInt("redstone_table.recipe_result.g"));
+        this.recipes.set(9, tag.getInt("redstone_table.recipe_result.h"));
+        this.recipes.set(10, tag.getInt("redstone_table.recipe_result.i"));
+        this.recipes.set(11, tag.getInt("redstone_table.recipe_result.j"));
+        this.recipes.set(12, tag.getInt("redstone_table.recipe_result.k"));
+        this.recipes.set(13, tag.getInt("redstone_table.recipe_result.l"));
+        this.recipes.set(14, tag.getInt("redstone_table.recipe_result.m"));
+        this.recipes.set(15, tag.getInt("redstone_table.recipe_result.n"));
+
+        super.load(tag);
     }
 
     @Override
@@ -159,7 +203,7 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("titulo");
+        return Component.literal("Redstone Table");
     }
 
     public void drops() {
@@ -173,45 +217,51 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
 
     public static void tick(Level level, BlockPos blockPos, BlockState state, RedstoneTableEntity entity) {
         if (!level.isClientSide()) {
-            setupRecipeList(entity);
-            setChanged(level, blockPos, state);
-        }
-    }
 
-    private static void setupRecipeList(RedstoneTableEntity entity) {
-        List<RedstoneTableRecipe> recipes;
+            initializeList(entity);
 
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
+            List<RedstoneTableRecipe> recipesList = hasRecipes(entity);
 
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
-        }
-        recipes = entity.level.getRecipeManager().getRecipesFor(RedstoneTableRecipe.Type.INSTANCE, inventory, entity.level);
-        Arrays.fill(entity.recipeListValues, false);
-        for (RecipeEnum recipeEnum : RecipeEnum.values()) {
-            for (RedstoneTableRecipe recipe: recipes){
-                if (recipeEnum.getOutput().getItem().equals(recipe.getOutput().getItem())) {
-                    entity.recipeListValues[recipeEnum.getId()] = true;
-                }
+            if (!recipesList.isEmpty()) {
+                recipesList.forEach(
+                    redstoneTableRecipe -> {
+                        if (redstoneTableRecipe.getResultItem().getItem().equals(Items.REDSTONE_TORCH)) {
+                            entity.recipes.set(0, 1);
+                        } else if (redstoneTableRecipe.getResultItem().getItem().equals(Items.OBSERVER)) {
+                            entity.recipes.set(1, 1);
+                        }
+                    });
             }
-        }
-        for (int index = 0; index < entity.data.getCount(); index++) {
-            entity.data.set(index, entity.convert(entity.recipeListValues[index]));
+
+            setChanged(level, blockPos, state);
+
         }
     }
 
-    private int convert(boolean value) {
-        return value ? 1 : 0;
+    private static void initializeList(RedstoneTableEntity entity) {
+        for (int index = 0; index <= 15; index++) {
+            entity.recipes.set(index, 0);
+        }
     }
 
-    private boolean convertn(int value) {
-        return value == 1;
+    private static List<RedstoneTableRecipe> hasRecipes(RedstoneTableEntity entity) {
+        SimpleContainer simpleContainer = new SimpleContainer(entity.itemHandler.getSlots());
+        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
+            simpleContainer.setItem(i, entity.itemHandler.getStackInSlot(i));
+        }
+
+        return entity.level.getRecipeManager().getRecipesFor(RedstoneTableRecipe.Type.INSTANCE, simpleContainer, entity.level);
+
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new RedstoneTableMenu(id, inventory,this, this.data);
+    }
+
+    public ArrayList<Integer> getList(RedstoneTableEntity entity) {
+        return this.recipes;
     }
 
 }

@@ -35,7 +35,7 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
     private boolean scrolling;
     private int startIndex;
     private static final ResourceLocation TEXTURE =
-            new ResourceLocation(RedstonesTable.MODID, "textures/gui/redstone_table_gui.png");
+            new ResourceLocation(RedstonesTable.MOD_ID, "textures/gui/redstone_table_gui.png");
     private static final Square SIZE_GUI = new Square(new Point(0,0), new Point(176, 0), new Point(0, 194), new Point(176, 194));
 
     public RedstoneTableScreen(RedstoneTableMenu menu, Inventory playerInventory, Component title) {
@@ -60,14 +60,17 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
 
     private void renderRecipes(GuiGraphics guiGraphics, int topLeft, int botLeft, int j1) {
 
-        this.menu.generateRecipes();
-        for(int i = this.startIndex; i < j1 && i < this.menu.getRecipes().size(); i++) {
-            int j = i - this.startIndex;
+        List<Integer> recipes = this.menu.getRecipes();
+        for(int index = 0; index < recipes.size(); index++) {
+            int j = index - this.startIndex;
             int k = topLeft + j % 4 * 16;
             int l = j / 4;
             int i1 = botLeft + l * 18 + 2;
             //renderiza el item de salida en el menu de seleccion
-            guiGraphics.renderItem(this.menu.getRecipes().get(i).getOutput(),k, i1);
+
+            if (recipes.get(index) == 1) {
+                guiGraphics.renderItem(RecipeEnum.values()[index].getOutput(),k, i1);
+            }
         }
     }
 
@@ -78,25 +81,5 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
         renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    public boolean mouseScrolled(double p_99314_, double p_99315_, double p_99316_) {
-        if (this.isScrollBarActive()) {
-            int i = this.getOffscreenRows();
-            float f = (float)p_99316_ / (float)i;
-            this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
-            this.startIndex = (int)((double)(this.scrollOffs * (float)i) + 0.5D) * 4;
-        }
-
-        return true;
-    }
-
-    protected int getOffscreenRows() {
-        this.menu.generateRecipes();
-        return (this.menu.getRecipes().size() + 6 - 1) / 6 - 2;
-    }
-
-    private boolean isScrollBarActive() {
-        this.menu.generateRecipes();
-        return this.displayRecipes && this.menu.getRecipes().size() > 12;
-    }
 
 }

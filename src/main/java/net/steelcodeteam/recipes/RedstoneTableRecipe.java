@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class RedstoneTableRecipe implements Recipe<SimpleContainer> {
     private final ResourceLocation id;
@@ -36,6 +36,22 @@ public class RedstoneTableRecipe implements Recipe<SimpleContainer> {
             return false;
         }
 
+        List<ItemStack> recipeItemStack = new ArrayList<>();
+
+        List<ItemStack> containerItemStack = new ArrayList<>();
+
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            containerItemStack.add(container.getItem(i));
+        }
+
+        List<ItemStack[]> opt = recipeItems.stream().map(Ingredient::getItems).toList();
+
+        for (ItemStack[] stacks : opt) {
+            recipeItemStack.addAll(Arrays.asList(stacks));
+        }
+
+        return containerItemStack.stream().map(itemStack -> itemStack.getItem()).toList().containsAll(recipeItemStack.stream().map(itemStack -> itemStack.getItem()).toList());
+/*
         boolean[] itsAll = new boolean[recipeItems.size()];
         Arrays.fill(itsAll, false);
         int index=0;
@@ -54,25 +70,25 @@ public class RedstoneTableRecipe implements Recipe<SimpleContainer> {
                 return false;
             }
         }
-        return true;
+        return true;*/
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {
+    public ItemStack assemble(SimpleContainer container, RegistryAccess access) {
         return output.copy();
     }
 
     @Override
-    public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
+    public boolean canCraftInDimensions(int width, int height) {
         return true;
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess p_267052_) {
+    public ItemStack getResultItem(RegistryAccess access) {
         return output.copy();
     }
 
-    public ItemStack getOutput() {
+    public ItemStack getResultItem() {
         return output.copy();
     }
 
@@ -102,7 +118,7 @@ public class RedstoneTableRecipe implements Recipe<SimpleContainer> {
 
     public static class Serializer implements RecipeSerializer<RedstoneTableRecipe> {
         public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID = new ResourceLocation(RedstonesTable.MODID, "redstone_table_recipe");
+        public static final ResourceLocation ID = new ResourceLocation(RedstonesTable.MOD_ID, "redstone_table_recipe");
 
 
         @Override
@@ -137,7 +153,7 @@ public class RedstoneTableRecipe implements Recipe<SimpleContainer> {
                 ing.toNetwork(buf);
             }
 
-            buf.writeItemStack(recipe.getOutput(), false);
+            buf.writeItemStack(recipe.getResultItem(), false);
         }
     }
 }

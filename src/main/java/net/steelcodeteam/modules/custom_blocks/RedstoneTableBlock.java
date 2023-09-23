@@ -25,9 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class RedstoneTableBlock extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty LIT = BlockStateProperties.LIT;
-
     public RedstoneTableBlock(Properties properties) {
         super(properties);
     }

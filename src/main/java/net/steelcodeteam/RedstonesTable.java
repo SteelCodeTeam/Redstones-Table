@@ -3,19 +3,11 @@ package net.steelcodeteam;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -32,7 +24,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.steelcodeteam.custom_block_entity.redstone_table.RedstoneTableScreen;
-import net.steelcodeteam.recipes.ModRecipesTypeSerializer;
+import net.steelcodeteam.registries.ModRecipesTypeRegister;
 import net.steelcodeteam.registries.ModBlockEntityRegister;
 import net.steelcodeteam.registries.ModBlockRegister;
 import net.steelcodeteam.registries.ModMenuRegister;
@@ -41,17 +33,17 @@ import org.slf4j.Logger;
 import java.util.function.Supplier;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(RedstonesTable.MODID)
+@Mod(RedstonesTable.MOD_ID)
 public class RedstonesTable {
 
     // Define mod id in a common place for everything to reference
-    public static final String MODID = "redstones_table";
+    public static final String MOD_ID = "redstones_table";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "redstones_table" namespace
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     // Create a Deferred Register to hold Items which will all be registered under the "redstones_table" namespace
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
 
 
 
@@ -71,7 +63,7 @@ public class RedstonesTable {
         ModBlockRegister.register();
         ModBlockEntityRegister.register(modEventBus);
         ModMenuRegister.register(modEventBus);
-        ModRecipesTypeSerializer.register(modEventBus);
+        ModRecipesTypeRegister.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -111,7 +103,7 @@ public class RedstonesTable {
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
 
         @SubscribeEvent
