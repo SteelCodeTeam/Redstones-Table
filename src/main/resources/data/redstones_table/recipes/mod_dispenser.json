@@ -1,0 +1,21 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:cobblestone"
+    },
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "minecraft:string"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:dispenser"
+  }
+}

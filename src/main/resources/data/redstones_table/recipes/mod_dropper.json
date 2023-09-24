@@ -1,0 +1,14 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:cobblestone"
+    }
+  ],
+  "output": {
+    "item": "minecraft:dropper"
+  }
+}

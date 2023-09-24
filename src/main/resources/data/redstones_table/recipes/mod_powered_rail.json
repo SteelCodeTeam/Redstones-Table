@@ -1,0 +1,18 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:powered_rail"
+  }
+}

@@ -40,6 +40,7 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
 
     public RedstoneTableScreen(RedstoneTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
+        this.inventoryLabelY+=30;
     }
 
     @Override
@@ -51,25 +52,44 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
         guiGraphics.blit(TEXTURE, x - 1, y + offsetY, SIZE_GUI.getTopLeft().x, SIZE_GUI.getTopLeft().y, SIZE_GUI.getBottomRight().x, SIZE_GUI.getBottomRight().y);
 
 
-        int topLeft = SIZE_GUI.getBottomLeft().x + 16;
-        int botLeft = SIZE_GUI.getBottomLeft().y + 62;
+        int xIzquierda = x + 16; //esquinas del recuadro de recetas
+        int yAbajo = y + 76;
         int j1 = this.startIndex + 12;
 
-        this.renderRecipes(guiGraphics, topLeft, botLeft, j1);
+        this.renderButtons(guiGraphics,xIzquierda,yAbajo,j1);
+        this.renderRecipes(guiGraphics, xIzquierda, yAbajo + 1, j1);
     }
 
-    private void renderRecipes(GuiGraphics guiGraphics, int topLeft, int botLeft, int j1) {
-
+    private void renderRecipes(GuiGraphics guiGraphics, int xIzquierda, int yAbajo, int j1) {
         List<Integer> recipes = this.menu.getRecipes();
+        int xPosition = xIzquierda;
+        int yPosition = yAbajo;
         for(int index = 0; index < recipes.size(); index++) {
-            int j = index - this.startIndex;
-            int k = topLeft + j % 4 * 16;
-            int l = j / 4;
-            int i1 = botLeft + l * 18 + 2;
             //renderiza el item de salida en el menu de seleccion
-
             if (recipes.get(index) == 1) {
-                guiGraphics.renderItem(RecipeEnum.values()[index].getOutput(),k, i1);
+                guiGraphics.renderItem(RecipeEnum.values()[index].getOutput(), xPosition, yPosition);
+                xPosition += 16;
+            }
+            if (xPosition >= xIzquierda + (16 * 6)) {
+                xPosition = xIzquierda;
+                yPosition += 19;
+            }
+        }
+    }
+
+    private void renderButtons(GuiGraphics guiGraphics, int xIzquierda, int yAbajo, int j1) {
+        List<Integer> recipes = this.menu.getRecipes();
+        int xPosition = xIzquierda;
+        int yPosition = yAbajo;
+        for(int index = 0; index < recipes.size(); index++) {
+            //renderiza el item de salida en el menu de seleccion
+            if (recipes.get(index) == 1) {
+                guiGraphics.blit(TEXTURE, xPosition, yPosition, 176, 15, 16, 18);
+                xPosition += 16;
+            }
+            if (xPosition >= xIzquierda + (16 * 6)) {
+                xPosition = xIzquierda;
+                yPosition += 19;
             }
         }
     }
@@ -80,6 +100,5 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         renderTooltip(guiGraphics, mouseX, mouseY);
     }
-
 
 }

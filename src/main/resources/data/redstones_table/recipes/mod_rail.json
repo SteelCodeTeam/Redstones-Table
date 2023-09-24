@@ -1,0 +1,15 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:stick"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:rail"
+  }
+}

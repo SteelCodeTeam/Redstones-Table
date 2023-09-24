@@ -1,0 +1,12 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:copper_ingot"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:lightning_rod"
+  }
+}

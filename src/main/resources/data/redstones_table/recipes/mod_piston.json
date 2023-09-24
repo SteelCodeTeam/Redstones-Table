@@ -1,0 +1,21 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:cobblestone"
+    },
+    {
+      "item": "minecraft:acacia_planks"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:piston"
+  }
+}

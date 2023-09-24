@@ -1,0 +1,18 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:stone"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:detector_rail"
+  }
+}

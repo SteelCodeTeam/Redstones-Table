@@ -21,6 +21,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.steelcodeteam.data.enums.RecipeEnum;
 import net.steelcodeteam.recipes.RedstoneTableRecipe;
 import net.steelcodeteam.registries.ModBlockEntityRegister;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,7 @@ import java.util.List;
 
 public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     public ArrayList<Integer> recipes = new ArrayList<>() {{
-        for (int i = 0; i <= 15; i++) {
+        for (int i = 0; i <= RecipeEnum.values().length; i++) {
             add(0);
         }
     }};
@@ -108,13 +109,14 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
                     case 13 -> RedstoneTableEntity.this.recipes.get(13);
                     case 14 -> RedstoneTableEntity.this.recipes.get(14);
                     case 15 -> RedstoneTableEntity.this.recipes.get(15);
+                    case 16 -> RedstoneTableEntity.this.recipes.get(16);
                     default -> 0;
                 };
             }
 
             @Override
             public void set(int index, int value) {
-                if (index >= 0 && index <= 15)
+                if (index >= 0 && index <= 16)
                     RedstoneTableEntity.this.recipes.set(index, value);
             }
 
@@ -132,21 +134,22 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
         tag.put("inventory", itemHandler.serializeNBT());
 
         tag.putInt("redstone_table.recipe_result.redstone_torch", this.recipes.get(0));
-        tag.putInt("redstone_table.recipe_result.dispenser", this.recipes.get(1));
-        tag.putInt("redstone_table.recipe_result.a", this.recipes.get(2));
-        tag.putInt("redstone_table.recipe_result.b", this.recipes.get(3));
-        tag.putInt("redstone_table.recipe_result.c", this.recipes.get(4));
-        tag.putInt("redstone_table.recipe_result.d", this.recipes.get(5));
-        tag.putInt("redstone_table.recipe_result.e", this.recipes.get(6));
-        tag.putInt("redstone_table.recipe_result.f", this.recipes.get(7));
-        tag.putInt("redstone_table.recipe_result.g", this.recipes.get(8));
-        tag.putInt("redstone_table.recipe_result.h", this.recipes.get(9));
-        tag.putInt("redstone_table.recipe_result.i", this.recipes.get(10));
-        tag.putInt("redstone_table.recipe_result.j", this.recipes.get(11));
-        tag.putInt("redstone_table.recipe_result.k", this.recipes.get(12));
-        tag.putInt("redstone_table.recipe_result.l", this.recipes.get(13));
-        tag.putInt("redstone_table.recipe_result.m", this.recipes.get(14));
-        tag.putInt("redstone_table.recipe_result.n", this.recipes.get(15));
+        tag.putInt("redstone_table.recipe_result.repeater", this.recipes.get(1));
+        tag.putInt("redstone_table.recipe_result.comparator", this.recipes.get(2));
+        tag.putInt("redstone_table.recipe_result.observer", this.recipes.get(3));
+        tag.putInt("redstone_table.recipe_result.dispenser", this.recipes.get(4));
+        tag.putInt("redstone_table.recipe_result.dropper", this.recipes.get(5));
+        tag.putInt("redstone_table.recipe_result.piston", this.recipes.get(6));
+        tag.putInt("redstone_table.recipe_result.sticky_piston", this.recipes.get(7));
+        tag.putInt("redstone_table.recipe_result.rail", this.recipes.get(8));
+        tag.putInt("redstone_table.recipe_result.powered_rail", this.recipes.get(9));
+        tag.putInt("redstone_table.recipe_result.detector_rail", this.recipes.get(10));
+        tag.putInt("redstone_table.recipe_result.hopper", this.recipes.get(11));
+        tag.putInt("redstone_table.recipe_result.clock", this.recipes.get(12));
+        tag.putInt("redstone_table.recipe_result.compass", this.recipes.get(13));
+        tag.putInt("redstone_table.recipe_result.redstone_lamp", this.recipes.get(14));
+        tag.putInt("redstone_table.recipe_result.note_block", this.recipes.get(15));
+        tag.putInt("redstone_table.recipe_result.lightning_rod", this.recipes.get(16));
 
         super.saveAdditional(tag);
     }
@@ -156,21 +159,22 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
 
         itemHandler.deserializeNBT(tag.getCompound("inventory"));
         this.recipes.set(0, tag.getInt("redstone_table.recipe_result.redstone_torch"));
-        this.recipes.set(1, tag.getInt("redstone_table.recipe_result.dispenser"));
-        this.recipes.set(2, tag.getInt("redstone_table.recipe_result.a"));
-        this.recipes.set(3, tag.getInt("redstone_table.recipe_result.b"));
-        this.recipes.set(4, tag.getInt("redstone_table.recipe_result.c"));
-        this.recipes.set(5, tag.getInt("redstone_table.recipe_result.d"));
-        this.recipes.set(6, tag.getInt("redstone_table.recipe_result.e"));
-        this.recipes.set(7, tag.getInt("redstone_table.recipe_result.f"));
-        this.recipes.set(8, tag.getInt("redstone_table.recipe_result.g"));
-        this.recipes.set(9, tag.getInt("redstone_table.recipe_result.h"));
-        this.recipes.set(10, tag.getInt("redstone_table.recipe_result.i"));
-        this.recipes.set(11, tag.getInt("redstone_table.recipe_result.j"));
-        this.recipes.set(12, tag.getInt("redstone_table.recipe_result.k"));
-        this.recipes.set(13, tag.getInt("redstone_table.recipe_result.l"));
-        this.recipes.set(14, tag.getInt("redstone_table.recipe_result.m"));
-        this.recipes.set(15, tag.getInt("redstone_table.recipe_result.n"));
+        this.recipes.set(1, tag.getInt("redstone_table.recipe_result.repeater"));
+        this.recipes.set(2, tag.getInt("redstone_table.recipe_result.comparator"));
+        this.recipes.set(3, tag.getInt("redstone_table.recipe_result.observer"));
+        this.recipes.set(4, tag.getInt("redstone_table.recipe_result.dispenser"));
+        this.recipes.set(5, tag.getInt("redstone_table.recipe_result.dropper"));
+        this.recipes.set(6, tag.getInt("redstone_table.recipe_result.piston"));
+        this.recipes.set(7, tag.getInt("redstone_table.recipe_result.sticky_piston"));
+        this.recipes.set(8, tag.getInt("redstone_table.recipe_result.rail"));
+        this.recipes.set(9, tag.getInt("redstone_table.recipe_result.powered_rail"));
+        this.recipes.set(10, tag.getInt("redstone_table.recipe_result.detector_rail"));
+        this.recipes.set(11, tag.getInt("redstone_table.recipe_result.hopper"));
+        this.recipes.set(12, tag.getInt("redstone_table.recipe_result.clock"));
+        this.recipes.set(13, tag.getInt("redstone_table.recipe_result.compass"));
+        this.recipes.set(14, tag.getInt("redstone_table.recipe_result.redstone_lamp"));
+        this.recipes.set(15, tag.getInt("redstone_table.recipe_result.note_block"));
+        this.recipes.set(16, tag.getInt("redstone_table.recipe_result.lightning_rod"));
 
         super.load(tag);
     }
@@ -225,10 +229,10 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
             if (!recipesList.isEmpty()) {
                 recipesList.forEach(
                     redstoneTableRecipe -> {
-                        if (redstoneTableRecipe.getResultItem().getItem().equals(Items.REDSTONE_TORCH)) {
-                            entity.recipes.set(0, 1);
-                        } else if (redstoneTableRecipe.getResultItem().getItem().equals(Items.OBSERVER)) {
-                            entity.recipes.set(1, 1);
+                        for (RecipeEnum enumValue : RecipeEnum.values()) {
+                            if (redstoneTableRecipe.getResultItem().getItem().equals(enumValue.getOutput().getItem())) {
+                                entity.recipes.set(enumValue.getId(), 1);
+                            }
                         }
                     });
             }
@@ -239,7 +243,7 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     }
 
     private static void initializeList(RedstoneTableEntity entity) {
-        for (int index = 0; index <= 15; index++) {
+        for (int index = 0; index <= RecipeEnum.values().length; index++) {
             entity.recipes.set(index, 0);
         }
     }

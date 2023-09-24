@@ -1,0 +1,15 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:glowstone"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:redstone_lamp"
+  }
+}
