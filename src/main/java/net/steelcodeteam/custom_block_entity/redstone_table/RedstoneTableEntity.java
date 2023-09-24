@@ -32,7 +32,7 @@ import java.util.List;
 
 public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     public ArrayList<Integer> recipes = new ArrayList<>() {{
-        for (int i = 0; i <= RecipeEnum.values().length; i++) {
+        for (int i = 0; i <= 18; i++) {
             add(0);
         }
     }};
@@ -60,19 +60,17 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
                 case 0 -> Items.REDSTONE == stack.getItem();
                 case 1 -> Items.STONE == stack.getItem();
                 case 2 -> Items.COBBLESTONE == stack.getItem();
-                case 3 -> Items.ACACIA_PLANKS == stack.getItem();
+                case 3 -> stack.getItem().getDescription().toString().contains("planks");
                 case 4 -> Items.GOLD_INGOT == stack.getItem();
                 case 5 -> Items.IRON_INGOT == stack.getItem();
                 case 6 -> Items.SLIME_BALL == stack.getItem();
                 case 7 -> Items.STRING == stack.getItem();
                 case 8 -> Items.QUARTZ == stack.getItem();
                 case 9 -> Items.GLASS == stack.getItem();
-                case 10 -> Items.CHEST == stack.getItem();
-                case 11 -> Items.REDSTONE_TORCH == stack.getItem();
-                case 12 -> Items.HAY_BLOCK == stack.getItem();
-                case 13 -> Items.STICK == stack.getItem();
-                case 14 -> Items.GLOWSTONE == stack.getItem();
-                case 15 -> Items.COPPER_INGOT == stack.getItem();
+                case 10 -> Items.HAY_BLOCK == stack.getItem();
+                case 11 -> Items.STICK == stack.getItem();
+                case 12 -> Items.GLOWSTONE == stack.getItem();
+                case 13 -> Items.COPPER_INGOT == stack.getItem();
                 default -> false;
             };
         }
@@ -110,19 +108,21 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
                     case 14 -> RedstoneTableEntity.this.recipes.get(14);
                     case 15 -> RedstoneTableEntity.this.recipes.get(15);
                     case 16 -> RedstoneTableEntity.this.recipes.get(16);
+                    case 17 -> RedstoneTableEntity.this.recipes.get(17);
+                    case 18 -> RedstoneTableEntity.this.recipes.get(18);
                     default -> 0;
                 };
             }
 
             @Override
             public void set(int index, int value) {
-                if (index >= 0 && index <= 16)
+                if (index >= 0 && index <= 18)
                     RedstoneTableEntity.this.recipes.set(index, value);
             }
 
             @Override
             public int getCount() {
-                return 16;
+                return 19;
             }
         };
     }
@@ -134,22 +134,24 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
         tag.put("inventory", itemHandler.serializeNBT());
 
         tag.putInt("redstone_table.recipe_result.redstone_torch", this.recipes.get(0));
-        tag.putInt("redstone_table.recipe_result.repeater", this.recipes.get(1));
-        tag.putInt("redstone_table.recipe_result.comparator", this.recipes.get(2));
-        tag.putInt("redstone_table.recipe_result.observer", this.recipes.get(3));
-        tag.putInt("redstone_table.recipe_result.dispenser", this.recipes.get(4));
-        tag.putInt("redstone_table.recipe_result.dropper", this.recipes.get(5));
-        tag.putInt("redstone_table.recipe_result.piston", this.recipes.get(6));
-        tag.putInt("redstone_table.recipe_result.sticky_piston", this.recipes.get(7));
-        tag.putInt("redstone_table.recipe_result.rail", this.recipes.get(8));
-        tag.putInt("redstone_table.recipe_result.powered_rail", this.recipes.get(9));
-        tag.putInt("redstone_table.recipe_result.detector_rail", this.recipes.get(10));
-        tag.putInt("redstone_table.recipe_result.hopper", this.recipes.get(11));
-        tag.putInt("redstone_table.recipe_result.clock", this.recipes.get(12));
-        tag.putInt("redstone_table.recipe_result.compass", this.recipes.get(13));
-        tag.putInt("redstone_table.recipe_result.redstone_lamp", this.recipes.get(14));
-        tag.putInt("redstone_table.recipe_result.note_block", this.recipes.get(15));
-        tag.putInt("redstone_table.recipe_result.lightning_rod", this.recipes.get(16));
+        tag.putInt("redstone_table.recipe_result.lever", this.recipes.get(1));
+        tag.putInt("redstone_table.recipe_result.repeater", this.recipes.get(2));
+        tag.putInt("redstone_table.recipe_result.comparator", this.recipes.get(3));
+        tag.putInt("redstone_table.recipe_result.observer", this.recipes.get(4));
+        tag.putInt("redstone_table.recipe_result.dispenser", this.recipes.get(5));
+        tag.putInt("redstone_table.recipe_result.dropper", this.recipes.get(6));
+        tag.putInt("redstone_table.recipe_result.piston", this.recipes.get(7));
+        tag.putInt("redstone_table.recipe_result.sticky_piston", this.recipes.get(8));
+        tag.putInt("redstone_table.recipe_result.rail", this.recipes.get(9));
+        tag.putInt("redstone_table.recipe_result.powered_rail", this.recipes.get(10));
+        tag.putInt("redstone_table.recipe_result.detector_rail", this.recipes.get(11));
+        tag.putInt("redstone_table.recipe_result.hopper", this.recipes.get(12));
+        tag.putInt("redstone_table.recipe_result.clock", this.recipes.get(13));
+        tag.putInt("redstone_table.recipe_result.compass", this.recipes.get(14));
+        tag.putInt("redstone_table.recipe_result.redstone_lamp", this.recipes.get(15));
+        tag.putInt("redstone_table.recipe_result.note_block", this.recipes.get(16));
+        tag.putInt("redstone_table.recipe_result.lightning_rod", this.recipes.get(17));
+        tag.putInt("redstone_table.recipe_result.daylight_detector", this.recipes.get(18));
 
         super.saveAdditional(tag);
     }
@@ -159,22 +161,24 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
 
         itemHandler.deserializeNBT(tag.getCompound("inventory"));
         this.recipes.set(0, tag.getInt("redstone_table.recipe_result.redstone_torch"));
-        this.recipes.set(1, tag.getInt("redstone_table.recipe_result.repeater"));
-        this.recipes.set(2, tag.getInt("redstone_table.recipe_result.comparator"));
-        this.recipes.set(3, tag.getInt("redstone_table.recipe_result.observer"));
-        this.recipes.set(4, tag.getInt("redstone_table.recipe_result.dispenser"));
-        this.recipes.set(5, tag.getInt("redstone_table.recipe_result.dropper"));
-        this.recipes.set(6, tag.getInt("redstone_table.recipe_result.piston"));
-        this.recipes.set(7, tag.getInt("redstone_table.recipe_result.sticky_piston"));
-        this.recipes.set(8, tag.getInt("redstone_table.recipe_result.rail"));
-        this.recipes.set(9, tag.getInt("redstone_table.recipe_result.powered_rail"));
-        this.recipes.set(10, tag.getInt("redstone_table.recipe_result.detector_rail"));
-        this.recipes.set(11, tag.getInt("redstone_table.recipe_result.hopper"));
-        this.recipes.set(12, tag.getInt("redstone_table.recipe_result.clock"));
-        this.recipes.set(13, tag.getInt("redstone_table.recipe_result.compass"));
-        this.recipes.set(14, tag.getInt("redstone_table.recipe_result.redstone_lamp"));
-        this.recipes.set(15, tag.getInt("redstone_table.recipe_result.note_block"));
-        this.recipes.set(16, tag.getInt("redstone_table.recipe_result.lightning_rod"));
+        this.recipes.set(1, tag.getInt("redstone_table.recipe_result.lever"));
+        this.recipes.set(2, tag.getInt("redstone_table.recipe_result.repeater"));
+        this.recipes.set(3, tag.getInt("redstone_table.recipe_result.comparator"));
+        this.recipes.set(4, tag.getInt("redstone_table.recipe_result.observer"));
+        this.recipes.set(5, tag.getInt("redstone_table.recipe_result.dispenser"));
+        this.recipes.set(6, tag.getInt("redstone_table.recipe_result.dropper"));
+        this.recipes.set(7, tag.getInt("redstone_table.recipe_result.piston"));
+        this.recipes.set(8, tag.getInt("redstone_table.recipe_result.sticky_piston"));
+        this.recipes.set(9, tag.getInt("redstone_table.recipe_result.rail"));
+        this.recipes.set(10, tag.getInt("redstone_table.recipe_result.powered_rail"));
+        this.recipes.set(11, tag.getInt("redstone_table.recipe_result.detector_rail"));
+        this.recipes.set(12, tag.getInt("redstone_table.recipe_result.hopper"));
+        this.recipes.set(13, tag.getInt("redstone_table.recipe_result.clock"));
+        this.recipes.set(14, tag.getInt("redstone_table.recipe_result.compass"));
+        this.recipes.set(15, tag.getInt("redstone_table.recipe_result.redstone_lamp"));
+        this.recipes.set(16, tag.getInt("redstone_table.recipe_result.note_block"));
+        this.recipes.set(17, tag.getInt("redstone_table.recipe_result.lightning_rod"));
+        this.recipes.set(18, tag.getInt("redstone_table.recipe_result.daylight_detector"));
 
         super.load(tag);
     }
@@ -243,7 +247,7 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     }
 
     private static void initializeList(RedstoneTableEntity entity) {
-        for (int index = 0; index <= RecipeEnum.values().length; index++) {
+        for (int index = 0; index <= 18; index++) {
             entity.recipes.set(index, 0);
         }
     }

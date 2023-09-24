@@ -1,0 +1,15 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "minecraft:cobblestone"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:lever"
+  }
+}

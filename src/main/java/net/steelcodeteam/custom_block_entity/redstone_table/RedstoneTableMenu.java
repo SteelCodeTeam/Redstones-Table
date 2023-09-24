@@ -135,12 +135,12 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
 
     public List<Integer> getRecipes() {
         List<Integer> recipes = new ArrayList<>() {{
-            for (int i = 0; i <= 15; i++) {
+            for (int i = 0; i <= 18; i++) {
                 add(0);
             }
         }};
 
-        for (int index = 0; index <= 15; index++) {
+        for (int index = 0; index <= 18; index++) {
             recipes.set(index, this.data.get(index));
         }
 
