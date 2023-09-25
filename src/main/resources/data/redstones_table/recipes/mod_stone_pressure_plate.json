@@ -1,0 +1,12 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:stone"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:stone_pressure_plate"
+  }
+}

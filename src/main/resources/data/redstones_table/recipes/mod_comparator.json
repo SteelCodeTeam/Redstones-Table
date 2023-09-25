@@ -2,17 +2,20 @@
   "type": "redstones_table:redstone_table_craft",
   "ingredients": [
     {
-      "item": "minecraft:cristal"
+      "item": "minecraft:redstone"
     },
     {
       "item": "minecraft:quartz"
     },
     {
-      "item": "minecraft:acacia_planks"
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "minecraft:stone"
     }
 
   ],
   "output": {
-    "item": "minecraft:daylight_detector"
+    "item": "minecraft:comparator"
   }
 }

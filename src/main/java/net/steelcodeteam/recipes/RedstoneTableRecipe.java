@@ -51,26 +51,6 @@ public class RedstoneTableRecipe implements Recipe<SimpleContainer> {
         }
 
         return containerItemStack.stream().map(itemStack -> itemStack.getItem()).toList().containsAll(recipeItemStack.stream().map(itemStack -> itemStack.getItem()).toList());
-/*
-        boolean[] itsAll = new boolean[recipeItems.size()];
-        Arrays.fill(itsAll, false);
-        int index=0;
-        for (Ingredient ingredient : recipeItems) {
-            for (int i = 0; i < container.getContainerSize(); i++) {
-
-                if (ingredient.test(container.getItem(i).copy())) {
-                    itsAll[index] = true;
-                }
-
-            }
-            index++;
-        }
-        for (boolean b : itsAll) {
-            if (!b) {
-                return false;
-            }
-        }
-        return true;*/
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.steelcodeteam.RedstonesTable;
@@ -70,23 +71,43 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
         List<Integer> recipes = this.menu.getRecipes();
         int xPosition = xIzquierda;
         int yPosition = yAbajo;
-        int cont = 0;
-        int draw = 0;
-        for (Integer val : recipes) {
+        //int index = 0;
 
+        int draw = 0;
+        int cantRecipes = 0;
+
+
+        for (int index = 0; index < recipes.size(); index++) {
+            if (recipes.get(index) == 1) {
+                if (this.startIndex <= cantRecipes && draw < 12) {
+                    guiGraphics.renderItem(RecipeEnum.values() [index].getOutput(), xPosition, yPosition);
+                    xPosition += 16;
+                    draw++;
+                }
+                cantRecipes ++;
+                if (xPosition >= xIzquierda + (16 * 6)) {
+                    xPosition = xIzquierda;
+                    yPosition += 18;
+                }
+            }
+        }
+
+
+
+        /*for (Integer val : recipes) {
             if (val == 1) {
-                if (cont > this.startIndex && draw < 12) {
-                    guiGraphics.renderItem(RecipeEnum.values()[cont].getOutput(), xPosition, yPosition);
+                if (this.startIndex <= index && draw < 12) {
+                    guiGraphics.renderItem(RecipeEnum.values() [index].getOutput(), xPosition, yPosition);
                     draw++;
                     xPosition += 16;
                 }
-                cont ++;
+                index++;
             }
             if (xPosition >= xIzquierda + (16 * 6)) {
                 xPosition = xIzquierda;
                 yPosition += 18;
             }
-        }
+        }*/
 
     }
 
@@ -94,11 +115,27 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
         List<Integer> recipes = this.menu.getRecipes();
         int xPosition = xIzquierda;
         int yPosition = yAbajo;
-        int cont = 0;
+        int cantRecipes = 0;
         int draw = 0;
-        for (Integer val : recipes) {
+
+        for (int index = 0; index < recipes.size(); index++) {
+            if (recipes.get(index) == 1) {
+                if (this.startIndex <= cantRecipes && draw < 12) {
+                    //index se puede usar para comparar si la receta de index esta seleccionada
+                    guiGraphics.blit(TEXTURE, xPosition, yPosition, 176, 15, 16, 18);
+                    xPosition += 16;
+                    draw++;
+                }
+                cantRecipes++;
+                if (xPosition >= xIzquierda + (16 * 6)) {
+                    xPosition = xIzquierda;
+                    yPosition += 18;
+                }
+            }
+        }
+        /*for (Integer val : recipes) {
             if (val == 1) {
-                if (cont > this.startIndex && draw < 12) {
+                if (this.startIndex <= cont  && draw < 12) {
                     guiGraphics.blit(TEXTURE, xPosition, yPosition, 176, 15, 16, 18);
                     draw++;
                     xPosition += 16;
@@ -109,7 +146,7 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
                 xPosition = xIzquierda;
                 yPosition += 18;
             }
-        }
+        }*/
     }
 
 

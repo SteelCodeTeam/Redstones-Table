@@ -2,13 +2,10 @@
   "type": "redstones_table:redstone_table_craft",
   "ingredients": [
     {
+      "item": "minecraft:hay_block"
+    },
+    {
       "item": "minecraft:redstone"
-    },
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "minecraft:quartz"
     }
 
   ],

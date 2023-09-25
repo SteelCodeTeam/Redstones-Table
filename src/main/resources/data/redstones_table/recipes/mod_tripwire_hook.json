@@ -1,0 +1,18 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "minecraft:acacia_planks"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:tripwire_hook"
+  }
+}

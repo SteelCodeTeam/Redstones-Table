@@ -1,0 +1,12 @@
+{
+  "type": "redstones_table:redstone_table_craft",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot"
+    }
+
+  ],
+  "output": {
+    "item": "minecraft:light_weighted_pressure_plate"
+  }
+}

@@ -22,7 +22,7 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
 
     //Server
     public RedstoneTableMenu(int menuId, Inventory inv, FriendlyByteBuf additionalData) {
-        this(menuId, inv, (RedstoneTableEntity) inv.player.level().getBlockEntity(additionalData.readBlockPos()), new SimpleContainerData(16));
+        this(menuId, inv, (RedstoneTableEntity) inv.player.level().getBlockEntity(additionalData.readBlockPos()), new SimpleContainerData(25));
     }
 
     //Client
@@ -135,12 +135,12 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
 
     public List<Integer> getRecipes() {
         List<Integer> recipes = new ArrayList<>() {{
-            for (int i = 0; i <= 18; i++) {
+            for (int i = 0; i <= 24; i++) {
                 add(0);
             }
         }};
 
-        for (int index = 0; index <= 18; index++) {
+        for (int index = 0; index <= 24; index++) {
             recipes.set(index, this.data.get(index));
         }
 
