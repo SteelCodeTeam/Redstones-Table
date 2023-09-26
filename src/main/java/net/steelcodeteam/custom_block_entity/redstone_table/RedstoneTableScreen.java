@@ -18,6 +18,7 @@ import net.steelcodeteam.modules.Square;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
@@ -63,24 +64,32 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
 
         int xIzquierda = x + 16; //esquinas del recuadro de recetas
         int yAbajo = y + 76;
-        this.renderButtons(guiGraphics,xIzquierda,yAbajo);
+        this.renderButtons(guiGraphics, mouseX, mouseY,xIzquierda, yAbajo);
         this.renderRecipes(guiGraphics, xIzquierda, yAbajo + 1);
     }
 
+
+    public ArrayList<Integer> recipeInContainer = new ArrayList<>() {{
+        for (int i = 0; i < 12; i++) {
+            add(-1);
+        }
+    }};
     private void renderRecipes(GuiGraphics guiGraphics, int xIzquierda, int yAbajo) {
         List<Integer> recipes = this.menu.getRecipes();
         int xPosition = xIzquierda;
         int yPosition = yAbajo;
-        //int index = 0;
-
         int draw = 0;
         int cantRecipes = 0;
 
+        for (int i = 0; i < 12;i++) {
+            recipeInContainer.set(0,-1);
+        }
 
         for (int index = 0; index < recipes.size(); index++) {
             if (recipes.get(index) == 1) {
                 if (this.startIndex <= cantRecipes && draw < 12) {
-                    guiGraphics.renderItem(RecipeEnum.values() [index].getOutput(), xPosition, yPosition);
+                    guiGraphics.renderItem(RecipeEnum.values()[index].getOutput(), xPosition, yPosition);
+                    recipeInContainer.set(draw, index);
                     xPosition += 16;
                     draw++;
                 }
@@ -91,27 +100,9 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
                 }
             }
         }
-
-
-
-        /*for (Integer val : recipes) {
-            if (val == 1) {
-                if (this.startIndex <= index && draw < 12) {
-                    guiGraphics.renderItem(RecipeEnum.values() [index].getOutput(), xPosition, yPosition);
-                    draw++;
-                    xPosition += 16;
-                }
-                index++;
-            }
-            if (xPosition >= xIzquierda + (16 * 6)) {
-                xPosition = xIzquierda;
-                yPosition += 18;
-            }
-        }*/
-
     }
 
-    private void renderButtons(GuiGraphics guiGraphics, int xIzquierda, int yAbajo) {
+    private void renderButtons(GuiGraphics guiGraphics,int mouseX, int mouseY, int xIzquierda, int yAbajo) {
         List<Integer> recipes = this.menu.getRecipes();
         int xPosition = xIzquierda;
         int yPosition = yAbajo;
@@ -121,8 +112,17 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
         for (int index = 0; index < recipes.size(); index++) {
             if (recipes.get(index) == 1) {
                 if (this.startIndex <= cantRecipes && draw < 12) {
-                    //index se puede usar para comparar si la receta de index esta seleccionada
-                    guiGraphics.blit(TEXTURE, xPosition, yPosition, 176, 15, 16, 18);
+
+                    int yButton;
+                    if (this.menu.getSelected() == index) {
+                        yButton = 33;
+                    } else if ((xPosition < mouseX) && (mouseX < xPosition + 16) && (yPosition < mouseY) && (mouseY < yPosition + 18)) {
+                        yButton = 51;
+                    } else {
+                        yButton = 15;
+                    }
+
+                    guiGraphics.blit(TEXTURE, xPosition, yPosition, 176, yButton, 16, 18);
                     xPosition += 16;
                     draw++;
                 }
@@ -133,20 +133,6 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
                 }
             }
         }
-        /*for (Integer val : recipes) {
-            if (val == 1) {
-                if (this.startIndex <= cont  && draw < 12) {
-                    guiGraphics.blit(TEXTURE, xPosition, yPosition, 176, 15, 16, 18);
-                    draw++;
-                    xPosition += 16;
-                }
-                cont ++;
-            }
-            if (xPosition >= xIzquierda + (16 * 6)) {
-                xPosition = xIzquierda;
-                yPosition += 18;
-            }
-        }*/
     }
 
 
@@ -178,9 +164,46 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
             this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
             this.startIndex = (int)((double)(this.scrollOffs * (float)i) + 0.5D) * 6;
         }
-
         return true;
     }
+
+    @Override
+    public boolean mouseClicked(double xPos, double yPos, int p_97750_) {
+        this.scrolling = false;
+
+        int x = ((width - SIZE_GUI.getBottomRight().x) / 2) + 16;
+        int y = ((height - SIZE_GUI.getBottomRight().y) / 2) + 76;
+
+        if (this.displayRecipes) {
+            int xPosition = x;
+            int yPosition = y;
+
+
+            for (int index = 0; index < (int) recipeInContainer.stream().filter(val -> val !=-1).count(); index++) {
+                if ((xPosition < xPos) && (xPos < xPosition + 16) && (yPosition < yPos) && (yPos < yPosition + 18)) {
+                    this.menu.setSelected(recipeInContainer.get(index));
+                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
+                    return true;
+                }
+                xPosition += 16;
+
+
+                if (xPosition >= x + (16 * 6)) {
+                    xPosition = x;
+                    yPosition += 18;
+                }
+
+            }
+
+            int xScroll = ((width - SIZE_GUI.getBottomRight().x) / 2) + 116;
+            int yScroll = ((height - SIZE_GUI.getBottomRight().y) / 2) + 76;
+            if (xPos >= (double)xScroll && xPos < (double)(xScroll + 12) && yPos >= (double) yScroll && yPos < (double)(yScroll + 54)) {
+                this.scrolling = true;
+            }
+        }
+        return super.mouseClicked(xPos, yPos, p_97750_);
+    }
+
     private boolean isScrollBarActive() {
         return this.displayRecipes && (int) this.menu.getRecipes().stream().filter(val -> val == 1).count() > 12;
     }
@@ -195,6 +218,5 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
             this.scrollOffs = 0.0F;
             this.startIndex = 0;
         }
-
     }
 }

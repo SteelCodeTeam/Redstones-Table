@@ -2,7 +2,7 @@
   "type": "redstones_table:redstone_table_craft",
   "ingredients": [
     {
-      "item": "minecraft:cristal"
+      "item": "minecraft:glass"
     },
     {
       "item": "minecraft:quartz"
@@ -10,7 +10,6 @@
     {
       "item": "minecraft:acacia_planks"
     }
-
   ],
   "output": {
     "item": "minecraft:daylight_detector"

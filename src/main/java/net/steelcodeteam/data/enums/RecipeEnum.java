@@ -1,5 +1,6 @@
 package net.steelcodeteam.data.enums;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -44,5 +45,13 @@ public enum RecipeEnum {
 
     public ItemStack getOutput() {
         return output;
+    }
+    public static ItemStack getOutputForId(int id) {
+        for (RecipeEnum recipeEnum : RecipeEnum.values()) {
+            if (recipeEnum.getId() == id) {
+                return recipeEnum.output;
+            }
+        }
+        return ItemStack.EMPTY;
     }
 }

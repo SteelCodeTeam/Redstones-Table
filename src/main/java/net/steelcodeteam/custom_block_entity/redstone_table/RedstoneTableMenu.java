@@ -22,7 +22,7 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
 
     //Server
     public RedstoneTableMenu(int menuId, Inventory inv, FriendlyByteBuf additionalData) {
-        this(menuId, inv, (RedstoneTableEntity) inv.player.level().getBlockEntity(additionalData.readBlockPos()), new SimpleContainerData(25));
+        this(menuId, inv, (RedstoneTableEntity) inv.player.level().getBlockEntity(additionalData.readBlockPos()), new SimpleContainerData(RecipeEnum.values().length + 1));
     }
 
     //Client
@@ -99,6 +99,7 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
                 player, ModBlockRegister.REDSTONE_TABLE.get());
     }
+
     private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
@@ -106,11 +107,13 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
             }
         }
     }
+
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 7 + i * 18, 170));
         }
     }
+
     private void addSlotsToMenu() {
 
         this.blockEntity.getOptional().ifPresent(itemStackHandler -> {
@@ -120,30 +123,40 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
                 for (int i = 0; i < 8; i++) {
                     //0 to 7 first line
                     //8 to 15 second line
-                    this.addSlot(new SlotItemHandler(itemStackHandler,  i + (j * 8), slotOffsetX, slotOffsetY));
+                    this.addSlot(new SlotItemHandler(itemStackHandler, i + (j * 8), slotOffsetX, slotOffsetY));
                     slotOffsetX += 18;
                 }
                 slotOffsetX = 16;
                 slotOffsetY = 36;
             }
             //16 result slot
-            //this.addSlot(new SlotItemHandler(itemStackHandler,  16, 145, 73));
+            this.addSlot(new SlotItemHandler(itemStackHandler,  16, 145, 73));
         });
     }
 
 
-
     public List<Integer> getRecipes() {
         List<Integer> recipes = new ArrayList<>() {{
-            for (int i = 0; i <= 24; i++) {
+            for (int i = 0; i < RecipeEnum.values().length; i++) {
                 add(0);
             }
         }};
 
-        for (int index = 0; index <= 24; index++) {
+        for (int index = 0; index < RecipeEnum.values().length; index++) {
             recipes.set(index, this.data.get(index));
         }
 
         return recipes;
+    }
+
+    public void setSelected(int i) {
+        this.data.set(25, i);
+        this.blockEntity.getOptional().ifPresent(itemStackHandler -> {
+            itemStackHandler.setStackInSlot(16, new ItemStack(RecipeEnum.getOutputForId(i).getItem(), 2));
+        });
+    }
+
+    public int getSelected() {
+        return this.data.get(25);
     }
 }

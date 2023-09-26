@@ -32,7 +32,7 @@ import java.util.List;
 
 public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     public ArrayList<Integer> recipes = new ArrayList<>() {{
-        for (int i = 0; i <= 24; i++) {
+        for (int i = 0; i < RecipeEnum.values().length; i++) {
             add(0);
         }
     }};
@@ -42,13 +42,15 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
     protected final ContainerData data;
 
+    private int recipeSelected = -1;
+
 
     public LazyOptional<ItemStackHandler> getOptional() {
         return this.optional;
     }
 
 
-    private final ItemStackHandler itemHandler = new ItemStackHandler(16) {
+    private final ItemStackHandler itemHandler = new ItemStackHandler(17) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -119,19 +121,23 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
                     case 22 -> RedstoneTableEntity.this.recipes.get(22);
                     case 23 -> RedstoneTableEntity.this.recipes.get(23);
                     case 24 -> RedstoneTableEntity.this.recipes.get(24);
+                    case 25 -> RedstoneTableEntity.this.recipeSelected;
                     default -> 0;
                 };
             }
 
             @Override
             public void set(int index, int value) {
-                if (index >= 0 && index <= 24)
+                if (index >= 0 && index < RecipeEnum.values().length) {
                     RedstoneTableEntity.this.recipes.set(index, value);
+                } else if (index == 25){
+                    RedstoneTableEntity.this.recipeSelected = value;
+                }
             }
 
             @Override
             public int getCount() {
-                return 25;
+                return RecipeEnum.values().length + 1;
             }
         };
     }
@@ -141,32 +147,10 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     protected void saveAdditional(@NotNull CompoundTag tag) {
 
         tag.put("inventory", itemHandler.serializeNBT());
-
-        tag.putInt("redstone_table.recipe_result.redstone_torch", this.recipes.get(0));
-        tag.putInt("redstone_table.recipe_result.lever", this.recipes.get(1));
-        tag.putInt("redstone_table.recipe_result.stone_pressure_plate", this.recipes.get(2));
-        tag.putInt("redstone_table.recipe_result.light_weighted_pressure_plate", this.recipes.get(3));
-        tag.putInt("redstone_table.recipe_result.heavy_weighted_pressure_plate", this.recipes.get(4));
-        tag.putInt("redstone_table.recipe_result.repeater", this.recipes.get(5));
-        tag.putInt("redstone_table.recipe_result.comparator", this.recipes.get(6));
-        tag.putInt("redstone_table.recipe_result.observer", this.recipes.get(7));
-        tag.putInt("redstone_table.recipe_result.dispenser", this.recipes.get(8));
-        tag.putInt("redstone_table.recipe_result.dropper", this.recipes.get(9));
-        tag.putInt("redstone_table.recipe_result.piston", this.recipes.get(10));
-        tag.putInt("redstone_table.recipe_result.sticky_piston", this.recipes.get(11));
-        tag.putInt("redstone_table.recipe_result.rail", this.recipes.get(12));
-        tag.putInt("redstone_table.recipe_result.powered_rail", this.recipes.get(13));
-        tag.putInt("redstone_table.recipe_result.detector_rail", this.recipes.get(14));
-        tag.putInt("redstone_table.recipe_result.hopper", this.recipes.get(15));
-        tag.putInt("redstone_table.recipe_result.clock", this.recipes.get(16));
-        tag.putInt("redstone_table.recipe_result.compass", this.recipes.get(17));
-        tag.putInt("redstone_table.recipe_result.redstone_lamp", this.recipes.get(18));
-        tag.putInt("redstone_table.recipe_result.note_block", this.recipes.get(19));
-        tag.putInt("redstone_table.recipe_result.lightning_rod", this.recipes.get(20));
-        tag.putInt("redstone_table.recipe_result.daylight_detector", this.recipes.get(21));
-        tag.putInt("redstone_table.recipe_result.calibrated_sculk_sensor", this.recipes.get(22));
-        tag.putInt("redstone_table.recipe_result.tripwire_hooks", this.recipes.get(23));
-        tag.putInt("redstone_table.recipe_result.target", this.recipes.get(24));
+        for (RecipeEnum recipeEnum : RecipeEnum.values()) {
+            tag.putInt("redstone_table.recipe_result." + recipeEnum.name().toLowerCase(), this.recipes.get(recipeEnum.getId()));
+        }
+        tag.putInt("redstone_table.recipe_selected", this.recipeSelected);
 
         super.saveAdditional(tag);
     }
@@ -175,31 +159,11 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     public void load(@NotNull CompoundTag tag) {
 
         itemHandler.deserializeNBT(tag.getCompound("inventory"));
-        this.recipes.set(0, tag.getInt("redstone_table.recipe_result.redstone_torch"));
-        this.recipes.set(1, tag.getInt("redstone_table.recipe_result.lever"));
-        this.recipes.set(2, tag.getInt("redstone_table.recipe_result.stone_pressure_plate"));
-        this.recipes.set(3, tag.getInt("redstone_table.recipe_result.light_weighted_pressure_plate"));
-        this.recipes.set(4, tag.getInt("redstone_table.recipe_result.heavy_weighted_pressure_plate"));
-        this.recipes.set(5, tag.getInt("redstone_table.recipe_result.repeater"));
-        this.recipes.set(6, tag.getInt("redstone_table.recipe_result.comparator"));
-        this.recipes.set(7, tag.getInt("redstone_table.recipe_result.observer"));
-        this.recipes.set(8, tag.getInt("redstone_table.recipe_result.dispenser"));
-        this.recipes.set(9, tag.getInt("redstone_table.recipe_result.dropper"));
-        this.recipes.set(10, tag.getInt("redstone_table.recipe_result.piston"));
-        this.recipes.set(11, tag.getInt("redstone_table.recipe_result.sticky_piston"));
-        this.recipes.set(12, tag.getInt("redstone_table.recipe_result.rail"));
-        this.recipes.set(13, tag.getInt("redstone_table.recipe_result.powered_rail"));
-        this.recipes.set(14, tag.getInt("redstone_table.recipe_result.detector_rail"));
-        this.recipes.set(15, tag.getInt("redstone_table.recipe_result.hopper"));
-        this.recipes.set(16, tag.getInt("redstone_table.recipe_result.clock"));
-        this.recipes.set(17, tag.getInt("redstone_table.recipe_result.compass"));
-        this.recipes.set(18, tag.getInt("redstone_table.recipe_result.redstone_lamp"));
-        this.recipes.set(19, tag.getInt("redstone_table.recipe_result.note_block"));
-        this.recipes.set(20, tag.getInt("redstone_table.recipe_result.lightning_rod"));
-        this.recipes.set(21, tag.getInt("redstone_table.recipe_result.daylight_detector"));
-        this.recipes.set(22, tag.getInt("redstone_table.recipe_result.calibrated_sculk_sensor"));
-        this.recipes.set(23, tag.getInt("redstone_table.recipe_result.tripwire_hooks"));
-        this.recipes.set(24, tag.getInt("redstone_table.recipe_result.target"));
+        for (RecipeEnum recipeEnum : RecipeEnum.values()) {
+            this.recipes.set(recipeEnum.getId(), tag.getInt("redstone_table.recipe_result."+recipeEnum.name().toLowerCase()));
+        }
+
+        this.recipeSelected = tag.getInt("redstone_table.recipe_selected");
 
         super.load(tag);
     }
@@ -268,7 +232,7 @@ public class RedstoneTableEntity extends BlockEntity implements MenuProvider {
     }
 
     private static void initializeList(RedstoneTableEntity entity) {
-        for (int index = 0; index <= 24; index++) {
+        for (int index = 0; index < RecipeEnum.values().length; index++) {
             entity.recipes.set(index, 0);
         }
     }
