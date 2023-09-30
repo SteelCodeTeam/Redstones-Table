@@ -130,7 +130,7 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
                 slotOffsetY = 36;
             }
             //16 result slot
-            this.addSlot(new SlotItemHandler(itemStackHandler,  16, 145, 73));
+            this.addSlot(new SlotItemHandler(itemStackHandler,  16, 144, 72));
         });
     }
 
@@ -158,5 +158,9 @@ public class RedstoneTableMenu extends AbstractContainerMenu {
 
     public int getSelected() {
         return this.data.get(25);
+    }
+
+    public RedstoneTableEntity getBlockEntity() {
+        return blockEntity;
     }
 }

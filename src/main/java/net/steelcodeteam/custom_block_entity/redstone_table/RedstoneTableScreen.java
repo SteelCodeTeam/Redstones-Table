@@ -10,9 +10,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.steelcodeteam.RedstonesTable;
+import net.steelcodeteam.data.enums.InputsEnum;
 import net.steelcodeteam.data.enums.RecipeEnum;
 import net.steelcodeteam.modules.Square;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +66,7 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
 
         int xIzquierda = x + 16; //esquinas del recuadro de recetas
         int yAbajo = y + 76;
-        this.renderButtons(guiGraphics, mouseX, mouseY,xIzquierda, yAbajo);
+        this.renderButtons(guiGraphics, mouseX, mouseY, xIzquierda, yAbajo);
         this.renderRecipes(guiGraphics, xIzquierda, yAbajo + 1);
     }
 
@@ -81,7 +83,7 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
         int draw = 0;
         int cantRecipes = 0;
 
-        for (int i = 0; i < 12;i++) {
+        for (int i = 0; i < 12; i++) {
             recipeInContainer.set(0,-1);
         }
 
@@ -102,7 +104,52 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
         }
     }
 
-    private void renderButtons(GuiGraphics guiGraphics,int mouseX, int mouseY, int xIzquierda, int yAbajo) {
+    @Override
+    protected void renderTooltip(GuiGraphics guiGraphics, int xPos, int yPos) {
+
+        this.menu.getBlockEntity().getOptional().ifPresent(itemStackHandler -> {
+            int xPosition = ((width - SIZE_GUI.getBottomRight().x) / 2) + 16;
+            int yPosition = ((height - SIZE_GUI.getBottomRight().y) / 2) + 33;
+
+            int cont = 0;
+            for (int index = 0; index < 16; index++) {
+                if ((xPosition < xPos) && (xPos < xPosition + 16) && (yPosition < yPos) && (yPos < yPosition + 18)) {
+                    if (itemStackHandler.getStackInSlot(index).equals(ItemStack.EMPTY)) {
+                        guiGraphics.renderTooltip(this.font, InputsEnum.getOutputForId(index), xPos, yPos);
+                    }
+                }
+                xPosition += 18;
+                cont++;
+                if (8 <= cont) {
+                    xPosition = ((width - SIZE_GUI.getBottomRight().x) / 2) + 16;
+                    yPosition += 18;
+                    cont = 0;
+                }
+            }
+        });
+
+        int xPosition = ((width - SIZE_GUI.getBottomRight().x) / 2) + 16;
+        int yPosition = ((height - SIZE_GUI.getBottomRight().y) / 2) + 76;
+        int cont = 0;
+        for (int index = 0; index < (int) recipeInContainer.stream().filter(val -> val !=-1).count(); index++) {
+            if ((xPosition < xPos) && (xPos < xPosition + 16) && (yPosition < yPos) && (yPos < yPosition + 18)) {
+                guiGraphics.renderTooltip(this.font, RecipeEnum.getOutputForId(recipeInContainer.get(index)), xPos, yPos);
+            }
+            xPosition += 16;
+            cont++;
+            if (6 <= cont) {
+                xPosition = ((width - SIZE_GUI.getBottomRight().x) / 2) + 16;
+                yPosition += 18;
+                cont = 0;
+            }
+
+        }
+
+
+        super.renderTooltip(guiGraphics, xPos, yPos);
+    }
+
+    private void renderButtons(GuiGraphics guiGraphics, int mouseX, int mouseY, int xIzquierda, int yAbajo) {
         List<Integer> recipes = this.menu.getRecipes();
         int xPosition = xIzquierda;
         int yPosition = yAbajo;
@@ -113,14 +160,7 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
             if (recipes.get(index) == 1) {
                 if (this.startIndex <= cantRecipes && draw < 12) {
 
-                    int yButton;
-                    if (this.menu.getSelected() == index) {
-                        yButton = 33;
-                    } else if ((xPosition < mouseX) && (mouseX < xPosition + 16) && (yPosition < mouseY) && (mouseY < yPosition + 18)) {
-                        yButton = 51;
-                    } else {
-                        yButton = 15;
-                    }
+                    int yButton = (this.menu.getSelected() == index) ? 33 : (isMouseIn(xPosition, yPosition, mouseX, mouseY) ? 51 : 15);
 
                     guiGraphics.blit(TEXTURE, xPosition, yPosition, 176, yButton, 16, 18);
                     xPosition += 16;
@@ -133,6 +173,10 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
                 }
             }
         }
+    }
+
+    private boolean isMouseIn(int xPos, int yPos, int mouseX, int mouseY) {
+        return ((xPos < mouseX) && (mouseX < xPos + 16) && (yPos < mouseY) && (mouseY < yPos + 18));
     }
 
 
@@ -177,6 +221,7 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
         if (this.displayRecipes) {
             int xPosition = x;
             int yPosition = y;
+            int cont = 0;
 
 
             for (int index = 0; index < (int) recipeInContainer.stream().filter(val -> val !=-1).count(); index++) {
@@ -186,11 +231,11 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
                     return true;
                 }
                 xPosition += 16;
-
-
-                if (xPosition >= x + (16 * 6)) {
+                cont++;
+                if (6 <= cont) {
                     xPosition = x;
                     yPosition += 18;
+                    cont = 0;
                 }
 
             }
