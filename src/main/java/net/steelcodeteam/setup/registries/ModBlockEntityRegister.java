@@ -1,4 +1,4 @@
-package net.steelcodeteam.registries;
+package net.steelcodeteam.setup.registries;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;

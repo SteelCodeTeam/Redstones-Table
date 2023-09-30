@@ -23,7 +23,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.steelcodeteam.data.enums.RecipeEnum;
 import net.steelcodeteam.recipes.RedstoneTableRecipe;
-import net.steelcodeteam.registries.ModBlockEntityRegister;
+import net.steelcodeteam.setup.registries.ModBlockEntityRegister;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

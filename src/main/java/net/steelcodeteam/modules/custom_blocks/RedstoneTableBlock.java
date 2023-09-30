@@ -1,7 +1,6 @@
 package net.steelcodeteam.modules.custom_blocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.PacketUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -13,14 +12,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.steelcodeteam.custom_block_entity.redstone_table.RedstoneTableEntity;
-import net.steelcodeteam.registries.ModBlockEntityRegister;
-import net.steelcodeteam.registries.ModBlockRegister;
+import net.steelcodeteam.setup.registries.ModBlockEntityRegister;
 import org.jetbrains.annotations.Nullable;
 
 public class RedstoneTableBlock extends BaseEntityBlock {

@@ -24,10 +24,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.steelcodeteam.custom_block_entity.redstone_table.RedstoneTableScreen;
-import net.steelcodeteam.registries.ModRecipesTypeRegister;
-import net.steelcodeteam.registries.ModBlockEntityRegister;
-import net.steelcodeteam.registries.ModBlockRegister;
-import net.steelcodeteam.registries.ModMenuRegister;
+import net.steelcodeteam.setup.registries.ModRecipesTypeRegister;
+import net.steelcodeteam.setup.registries.ModBlockEntityRegister;
+import net.steelcodeteam.setup.registries.ModBlockRegister;
+import net.steelcodeteam.setup.registries.ModMenuRegister;
 import org.slf4j.Logger;
 
 import java.util.function.Supplier;
@@ -38,6 +38,7 @@ public class RedstonesTable {
 
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "redstones_table";
+    public static final String VERSION = "1.0";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "redstones_table" namespace

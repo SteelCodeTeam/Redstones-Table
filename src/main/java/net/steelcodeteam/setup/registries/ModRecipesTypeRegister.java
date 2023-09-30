@@ -1,4 +1,4 @@
-package net.steelcodeteam.registries;
+package net.steelcodeteam.setup.registries;
 
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;

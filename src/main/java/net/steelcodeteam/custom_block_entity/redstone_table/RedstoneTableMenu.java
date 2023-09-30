@@ -8,8 +8,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.SlotItemHandler;
 import net.steelcodeteam.data.enums.RecipeEnum;
-import net.steelcodeteam.registries.ModBlockRegister;
-import net.steelcodeteam.registries.ModMenuRegister;
+import net.steelcodeteam.setup.registries.ModBlockRegister;
+import net.steelcodeteam.setup.registries.ModMenuRegister;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

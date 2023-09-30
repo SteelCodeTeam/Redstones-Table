@@ -17,6 +17,7 @@ import net.steelcodeteam.RedstonesTable;
 import net.steelcodeteam.data.enums.InputsEnum;
 import net.steelcodeteam.data.enums.RecipeEnum;
 import net.steelcodeteam.modules.Square;
+import net.steelcodeteam.setup.network.ModNetwork;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -228,6 +229,8 @@ public class RedstoneTableScreen extends AbstractContainerScreen<RedstoneTableMe
                 if ((xPosition < xPos) && (xPos < xPosition + 16) && (yPosition < yPos) && (yPos < yPosition + 18)) {
                     this.menu.setSelected(recipeInContainer.get(index));
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
+
+                    ModNetwork.syncGenerateItemPacket(Minecraft.getInstance().player, RecipeEnum.getOutputForId(recipeInContainer.get(index)));
                     return true;
                 }
                 xPosition += 16;
